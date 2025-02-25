@@ -1,4 +1,4 @@
-// src/components/Navbar/index.tsx
+// src/components/Dashboard/Navbar/index.tsx
 
 import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -12,8 +12,8 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ handleDrawerToggle }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Estado para simular login/logout
-  const user = { name: 'Thaiane Almeida' }; // Nome mockado do cliente
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const user = { name: 'Thaiane Almeida' };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -38,7 +38,10 @@ const Navbar: React.FC<NavbarProps> = ({ handleDrawerToggle }) => {
       position="fixed"
       sx={{
         width: { sm: `calc(100% - 200px)` },
+        height: 'auto',
+        padding: '5px',
         ml: { sm: '240px' },
+        justifyContent: 'center',
       }}
     >
       <Toolbar>

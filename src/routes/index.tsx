@@ -3,19 +3,21 @@
 import React, { useState } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
-import HomePage from '../pages/Public/HomePage';
-import NotFoundPage from '../pages/Public/NotFoundPage';
-import ServicePage from '../pages/Public/ServicesPage';
-import ContactPage from '../pages/Public/ContactPage';
-import LoginPage from '../pages/Public/Login/LoginPage';
+
+import HomePage from '../pages/Enterprise/HomePage';
+import ServicePage from '../pages/Enterprise/ServicesPage';
+import ContactPage from '../pages/Enterprise/ContactPage';
+import LoginPage from '../pages/Enterprise/Login/LoginPage';
 
 import Sidebar from '../components/Dashboard/Sidebar';
 import Navbar from '../components/Dashboard/Navbar';
-import WhatsappPage from '../pages/Private/WhatsappPage';
-import FinancePage from '../pages/Private/FinancePage';
-import AnalyticsPage from '../pages/Private/AnalyticsPage';
-import DashboardPage from '../pages/Private/DashboardPage';
-import SettingsPage from '../pages/Private/SettingsPage';
+import WhatsappPage from '../pages/Dashboard/WhatsappPage';
+import FinancePage from '../pages/Dashboard/FinancePage';
+import AnalyticsPage from '../pages/Dashboard/AnalyticsPage';
+import DashboardPage from '../pages/Dashboard/DashboardPage';
+import SettingsPage from '../pages/Dashboard/SettingsPage';
+
+import NotFoundPage from '../pages/NotFoundPage';
 
 import { AuthProvider } from '../contexts/AuthContext';
 import PrivateRoute from './PrivateRoute';
