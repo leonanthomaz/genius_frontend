@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, styled } from '@mui/material';
 
-const FormContainer = styled(Box)`
+const FormContainer = styled(Box)<{ component?: React.ElementType }>`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -12,6 +12,7 @@ const FormContainer = styled(Box)`
   padding: 20px;
   border-radius: 8px;
 `;
+
 
 const QuickContactForm = () => {
   const [email, setEmail] = useState('');

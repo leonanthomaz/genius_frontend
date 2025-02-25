@@ -1,12 +1,11 @@
 // src/components/Footer.tsx
 
-import React from 'react';
 import { Box, Typography, Link, Container, Grid, styled } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 
-const FooterContainer = styled(Box)`
+const FooterContainer = styled(Box)<{ component?: React.ElementType }>`
   background: linear-gradient(135deg, #c9edf7 30%, #6beeff 50%);
   padding: 40px 0;
 `;

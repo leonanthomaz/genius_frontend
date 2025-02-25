@@ -15,13 +15,16 @@ interface SidebarProps {
   handleDrawerToggle: () => void;
 }
 
-const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
-  paddingLeft: theme.spacing(3),
-  '& .MuiListItemIcon-root': {
-    minWidth: theme.spacing(4),
-    marginRight: theme.spacing(1),
-  },
-}));
+const StyledListItemButton = styled(ListItemButton)<{ component?: React.ElementType }>(
+  ({ theme }) => ({
+    paddingLeft: theme.spacing(3),
+    '& .MuiListItemIcon-root': {
+      minWidth: theme.spacing(4),
+      marginRight: theme.spacing(1),
+    },
+  })
+);
+
 
 const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, handleDrawerToggle }) => {
   const drawer = (
@@ -51,18 +54,15 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, handleDrawerToggle }) => 
           to: '/dashboard/settings',
           icon: <SettingsIcon />
         }].map(({ text, to, icon }) => (
-          <StyledListItemButton
-            key={to}
-            component={Link}
-            to={to}
-            onClick={() => {
-              handleDrawerToggle();
-              document.body.style.overflow = 'auto';
-            }}
-          >
-            <ListItemIcon>{icon}</ListItemIcon>
-            <ListItemText primary={text} />
-          </StyledListItemButton>
+          <Link key={to} to={to} onClick={() => {
+            handleDrawerToggle();
+            document.body.style.overflow = 'auto';
+        }}>
+            <StyledListItemButton>
+              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemText primary={text} />
+            </StyledListItemButton>
+          </Link>
         ))}
       </List>
       <Divider />

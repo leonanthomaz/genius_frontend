@@ -29,9 +29,9 @@ const AnalyticsPage: React.FC = () => {
   };
 
   // Dados mockados para gráficos
-  const dadosInteracoes = [50, 60, 70, 80, 90, 100, 120]; // Últimos 7 dias
-  const dadosVendas = [5, 7, 6, 8, 10, 12, 15]; // Últimos 7 dias
-  const dadosSentimento = [70, 20, 10]; // Positivo, Neutro, Negativo (em porcentagem)
+  // const dadosInteracoes = [50, 60, 70, 80, 90, 100, 120]; // Últimos 7 dias
+  // const dadosVendas = [5, 7, 6, 8, 10, 12, 15]; // Últimos 7 dias
+  // const dadosSentimento = [70, 20, 10]; // Positivo, Neutro, Negativo (em porcentagem)
 
   // Função para simular o download de um relatório
   const handleDownloadRelatorio = () => {

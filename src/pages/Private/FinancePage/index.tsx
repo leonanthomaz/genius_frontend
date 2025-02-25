@@ -8,7 +8,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider,
   Table,
   TableBody,
   TableCell,
@@ -17,7 +16,7 @@ import {
   TableRow,
   Paper,
 } from '@mui/material';
-import { Download, Payment, Receipt } from '@mui/icons-material';
+import { Download, Payment } from '@mui/icons-material';
 
 const FinancePage: React.FC = () => {
   // Dados mockados para o resumo financeiro

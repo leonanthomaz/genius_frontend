@@ -1,13 +1,13 @@
 // src/pages/FaqPage.tsx
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Container, Typography, Accordion, AccordionSummary, AccordionDetails, styled } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add'; // Importe o AddIcon
 
 const FaqPage = () => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
-  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+  const handleChange = (panel: string) => (isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
 
