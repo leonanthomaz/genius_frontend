@@ -2,21 +2,21 @@
 
 import React, { useState } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
+import { Box } from '@mui/material';
 import HomePage from '../pages/Public/HomePage';
 import NotFoundPage from '../pages/Public/NotFoundPage';
 import ServicePage from '../pages/Public/ServicesPage';
 import ContactPage from '../pages/Public/ContactPage';
 import LoginPage from '../pages/Public/Login/LoginPage';
 
-import WhatsappPage from '../pages/Public/WhatsappPage';
+import Sidebar from '../components/Dashboard/Sidebar';
+import Navbar from '../components/Dashboard/Navbar';
+import WhatsappPage from '../pages/Private/WhatsappPage';
 import FinancePage from '../pages/Private/FinancePage';
 import AnalyticsPage from '../pages/Private/AnalyticsPage';
-
-import Sidebar from '../components/Dashboard/Sidebar';
 import DashboardPage from '../pages/Private/DashboardPage';
 import SettingsPage from '../pages/Private/SettingsPage';
-import { Box } from '@mui/material';
-import Navbar from '../components/Dashboard/Navbar';
+
 import { AuthProvider } from '../contexts/AuthContext';
 import PrivateRoute from './PrivateRoute';
 

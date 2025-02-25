@@ -3,8 +3,8 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import Navbar from '../Navbar';
-import { WhatsAppWidget } from 'react-whatsapp-widget';
-import 'react-whatsapp-widget/dist/index.css';
+import { FloatingWhatsApp } from 'react-floating-whatsapp';
+import Logo from '@/assets/img/logo-sf.png';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,15 +15,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <Box>
       <Navbar />
       <Box>{children}</Box>
-      <WhatsAppWidget
-        phoneNumber="(21) 99809-0928"
-        message="Olá! Como posso te ajudar?"
-        companyName="Sua Empresa"
-        sendButtonText="Enviar" // Traduzindo o botão de envio
-        headerTitle="Fale Conosco" // Traduzindo o título do cabeçalho
-        chatPersonName="Atendimento" // Traduzindo o nome da pessoa do chat
-        chatPersonOffline="Offline" // Traduzindo o status offline
-        chatPersonTyping="Digitando..." // Traduzindo o status digitando
+      <FloatingWhatsApp
+        phoneNumber="+5521998090928" // Número de telefone com código do país
+        accountName="Sua Empresa" // Nome da empresa
+        chatMessage="Olá! Como posso te ajudar?" // Mensagem inicial do chat
+        allowClickAway={true} // Permite fechar o chat clicando fora
+        allowEsc={true} // Permite fechar o chat com a tecla Esc
+        darkMode={false} // Modo escuro (false para desativar)
+        placeholder="Digite sua mensagem..." // Placeholder da caixa de mensagem
+        avatar={Logo} // URL do avatar (opcional)
+        statusMessage={"Online"}
       />
     </Box>
   );
