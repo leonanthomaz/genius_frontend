@@ -7,9 +7,11 @@ import AddIcon from '@mui/icons-material/Add'; // Importe o AddIcon
 const FaqPage = () => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
-  const handleChange = (panel: string) => (isExpanded: boolean) => {
+  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    console.log(event)
     setExpanded(isExpanded ? panel : false);
   };
+  
 
   const faqs = [
     {
@@ -53,6 +55,7 @@ const FaqPage = () => {
     background-color: #f9f9f9;
     padding: 16px;
   `;
+  
 
   return (
     <Container maxWidth="lg" sx={{ py: 8 }}>
