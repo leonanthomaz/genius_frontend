@@ -24,11 +24,11 @@ export const getUserDetailsApi = async (token: string): Promise<any> => {
     }
 };
 
-export const loginWithGoogleApi = async (token: string): Promise<string> => {
-    try {
-        //Implemente a lógica de login com google aqui.
-        return "token_mockado";
-    } catch (error) {
-        throw error;
-    }
-};
+// export const loginWithGoogleApi = async (token: string): Promise<string> => {
+//     try {
+//         //Implemente a lógica de login com google aqui.
+//         return "token_mockado";
+//     } catch (error) {
+//         throw error;
+//     }
+// };

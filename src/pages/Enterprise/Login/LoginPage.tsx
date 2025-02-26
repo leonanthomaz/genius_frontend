@@ -1,14 +1,15 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, TextField, Paper, Stack, useMediaQuery, useTheme, Grid } from '@mui/material';
+import { Box, Typography, Button, TextField, Paper, useMediaQuery, useTheme, Grid } from '@mui/material';
 import { useMuiTheme } from '../../../styles/muiTheme';
-import GoogleIcon from '@mui/icons-material/Google';
+// import GoogleIcon from '@mui/icons-material/Google';
 import LoginImage from '@/assets/img/robot-smart-rf.png';
 import { useAuth } from '../../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 
 const LoginPage: React.FC = () => {
-    const { login, loginWithGoogle } = useAuth();
+    // const { login, loginWithGoogle } = useAuth();
+    const { login } = useAuth();
     const navigate = useNavigate();
     const theme = useMuiTheme();
     const muiTheme = useTheme();
@@ -34,18 +35,18 @@ const LoginPage: React.FC = () => {
         }
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            // Dados mocados para o Google Login
-            const mockGoogleResponse = {
-                credential: 'mocked_google_token',
-            };
-            await loginWithGoogle(mockGoogleResponse.credential);
-            navigate('/dashboard');
-        } catch (error) {
-            toast.error("Erro ao fazer login com google");
-        }
-    };
+    // const handleGoogleLogin = async () => {
+    //     try {
+    //         // Dados mocados para o Google Login
+    //         const mockGoogleResponse = {
+    //             credential: 'mocked_google_token',
+    //         };
+    //         await loginWithGoogle(mockGoogleResponse.credential);
+    //         navigate('/dashboard');
+    //     } catch (error) {
+    //         toast.error("Erro ao fazer login com google");
+    //     }
+    // };
 
     return (
         <Box
@@ -112,7 +113,7 @@ const LoginPage: React.FC = () => {
                             Entrar
                         </Button>
 
-                        <Stack justifyContent="center" sx={{ marginTop: theme.spacing(2) }}>
+                        {/* <Stack justifyContent="center" sx={{ marginTop: theme.spacing(2) }}>
                             <Button
                                 variant="outlined"
                                 onClick={handleGoogleLogin}
@@ -121,7 +122,7 @@ const LoginPage: React.FC = () => {
                             >
                                 Entrar com Google
                             </Button>
-                        </Stack>
+                        </Stack> */}
                     </Paper>
                 </Grid>
             </Grid>
