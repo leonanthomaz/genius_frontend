@@ -14,6 +14,7 @@ import {
   styled,
 } from '@mui/material';
 import Layout from '../../../components/Layout';
+import Navbar from '../../../components/Enterprise/Navbar';
 
 const ContactForm = styled('form')`
   width: 100%;
@@ -51,6 +52,7 @@ const ContactPage = () => {
 
   return (
     <Layout withWhatsApp={true}>
+      <Navbar/>
       <Container maxWidth="md" sx={{ py: 20 }}>
         <Typography variant="h4" align="center" gutterBottom>
           Entre em Contato

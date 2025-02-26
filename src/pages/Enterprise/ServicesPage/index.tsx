@@ -8,6 +8,7 @@ import {
   Analytics as AnalyticsIcon,
 } from '@mui/icons-material';
 import Layout from '../../../components/Layout';
+import Navbar from '../../../components/Enterprise/Navbar';
 
 const ServiceCard = styled(Card)`
   height: 100%;
@@ -59,6 +60,7 @@ const ServicePage = () => {
 
   return (
     <Layout withWhatsApp={true}>
+      <Navbar/>
       <Container maxWidth="lg" sx={{ py: 20 }}>
         <Typography variant="h4" align="center" gutterBottom>
           Nossos Serviços

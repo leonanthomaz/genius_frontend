@@ -2,7 +2,7 @@
 
 import { Box, Typography, Button, Container, Stack } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
-import robotImage from '@/assets/img/robot.png';
+import robotImage from '@/assets/img/robot-idea.png';
 
 const fadeIn = keyframes`
   from {
@@ -67,7 +67,7 @@ const HeroSection = () => {
             </Box>
           </Box>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', width: { xs: '100%', md: '50%' } }}>
-            <img src={robotImage} alt="Robô de IA" style={{ maxWidth: '100%', height: 'auto' }} />
+            <img src={robotImage} alt="Robô de IA" style={{ maxWidth: '70%', height: 'auto' }} />
           </Box>
         </Stack>
       </Container>

@@ -1,6 +1,4 @@
-// src/pages/SettingsPage/index.tsx
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -16,22 +14,31 @@ import {
 } from '@mui/material';
 import { CloudUpload } from '@mui/icons-material';
 import Layout from '../../../components/Layout';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const SettingsPage: React.FC = () => {
-  // Dados mockados da empresa (vindos do backend)
+  const { getUser } = useAuth();
+  const user = getUser(); // Obtenha o usuário
+
+  // Dados da empresa (vindos do backend)
   const [empresa, setEmpresa] = useState({
-    nome: 'Empresa XYZ',
-    cnpj: '12.345.678/0001-99',
-    email: 'contato@empresa.com',
-    telefone: '',
-    endereco: '',
-    site: '',
-    descricao: '',
-    endpoint: '',
-    api: 'deepseek', // API padrão
-    modelo: '', // Modelo selecionado
-    chaveApi: '',
+    nome: user?.empresa_nome || '',
+    cnpj: user?.empresa_cnpj || '',
+    email: user?.empresa_email || '',
+    telefone: user?.empresa_telefone || '',
+    endereco: user?.empresa_endereco || '',
+    site: user?.empresa_website || '',
+    descricao: user?.empresa_descricao || '',
+    ramo: user?.empresa_ramo || '',
+    endpoint_entrada: user?.empresa_endpoint_entrada || '',
+    endpoint_saida: user?.empresa_endpoint_saida || '',
+    tipo_ia: user?.empresa_tipo_ia || '',
+    modelo_ia: user?.empresa_modelo_ia || '',
+    chaveApi: user?.empresa_token_ia || '',
+    tipoNegocio: user?.empresa_tipo_negocio || '',
   });
+
+  
 
   const [arquivoExcel, setArquivoExcel] = useState<File | null>(null);
   const [aceitoTermos, setAceitoTermos] = useState(false);
@@ -39,10 +46,27 @@ const SettingsPage: React.FC = () => {
 
   // Opções de API e modelos
   const apis = [
-    { nome: 'DeepSeek', modelos: ['deepseek-1.0', 'deepseek-2.0'] },
     { nome: 'OpenAI', modelos: ['gpt-3.5-turbo', 'gpt-4'] },
-    { nome: 'Gemini', modelos: ['gemini-1.0', 'gemini-2.0-flash'] },
+    { nome: 'Gemini', modelos: ['gemini-1.5-flash'] },
   ];
+
+  // Efeito para atualizar as opções de IA conforme o tipo de negócio
+  useEffect(() => {
+    if (empresa.tipoNegocio === 'servico') {
+      setEmpresa((prev) => ({
+        ...prev,
+        tipo_ia: 'gemini',
+        modelo_ia: 'gemini-1.5-flash',
+        chaveApi: '', // Limpa a chave da OpenAI
+      }));
+    } else {
+      setEmpresa((prev) => ({
+        ...prev,
+        tipo_ia: 'openai',
+        modelo_ia: 'gpt-3.5-turbo',
+      }));
+    }
+  }, [empresa.tipoNegocio]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
     const { name, value } = event.target;
@@ -59,13 +83,18 @@ const SettingsPage: React.FC = () => {
     event.preventDefault();
 
     // Validação dos campos obrigatórios
-    if (fonteDados === 'endpoint' && !empresa.endpoint) {
-      alert('O campo Endpoint é obrigatório!');
+    if (fonteDados === 'endpoint' && !empresa.endpoint_entrada) {
+      alert('O campo Endpoint de Entrada é obrigatório!');
       return;
     }
 
     if (fonteDados === 'upload' && !arquivoExcel) {
       alert('O upload de arquivo Excel é obrigatório!');
+      return;
+    }
+
+    if (!aceitoTermos) {
+      alert('Você deve aceitar os termos de uso!');
       return;
     }
 
@@ -77,8 +106,7 @@ const SettingsPage: React.FC = () => {
   return (
     <Layout withSidebar={true}>
       <Box>
-
-        <Typography variant="h5" sx={{ mt:8, mb: 3, color: 'primary.main', fontWeight: 'bold' }}>
+        <Typography variant="h5" sx={{ mt: 8, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>
           Configurações da Empresa
         </Typography>
         <Typography variant="body1" sx={{ mb: 3 }}>
@@ -148,8 +176,11 @@ const SettingsPage: React.FC = () => {
           />
 
           {/* Configurações da Assistente Virtual */}
-          <Typography variant="h6" sx={{ mt: 3, mb: 2, color: 'primary.main', fontWeight: 'bold' }}>
+          <Typography variant="h6" sx={{ mt: 3, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>
             Fonte de Dados
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 3 }}>
+              Escolha a fonte de dados para seus serviços ou produtos.
           </Typography>
 
           {/* Escolha da fonte de dados */}
@@ -168,28 +199,28 @@ const SettingsPage: React.FC = () => {
 
           {/* Campo Endpoint (visível apenas se a fonte for endpoint) */}
           {fonteDados === 'endpoint' && (
-          <>
-            <TextField
-              label="Endpoint de Entrada"
-              name="endpoint"
-              value={empresa.endpoint}
-              onChange={handleChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              placeholder="Ex: https://api.empresa.com/dados"
-              required
-            />
-            <TextField
-              label="Endpoint de Saída"
-              name="endpoint"
-              value={empresa.endpoint}
-              onChange={handleChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              placeholder="Ex: https://api.empresa.com/dados"
-              disabled
-            />
-          </>
+            <>
+              <TextField
+                label="Endpoint de Entrada"
+                name="endpoint_entrada"
+                value={empresa.endpoint_entrada}
+                onChange={handleChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                placeholder="Ex: https://api.empresa.com/dados"
+                required
+              />
+              <TextField
+                label="Aguardando..."
+                name="endpoint_saida"
+                value={empresa.endpoint_saida}
+                onChange={handleChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                placeholder="Ex: https://api.empresa.com/dados"
+                disabled
+              />
+            </>
           )}
 
           {/* Upload de Arquivo Excel (visível apenas se a fonte for upload) */}
@@ -212,15 +243,32 @@ const SettingsPage: React.FC = () => {
             </Box>
           )}
 
+          {/* Tipo de Negócio */}
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Tipo de Negócio</InputLabel>
+            <Select
+              name="tipoNegocio"
+              value={empresa.tipoNegocio}
+              onChange={handleChange}
+              label="Tipo de Negócio"
+              required
+            >
+              <MenuItem value="produto">Produtos</MenuItem>
+              <MenuItem value="servico">Serviços</MenuItem>
+              <MenuItem value="produto-servico">Produtos e Serviços</MenuItem>
+            </Select>
+          </FormControl>
+
           {/* Configurações de API e Modelo */}
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
             <FormControl sx={{ flex: 1 }}>
-              <InputLabel>IA</InputLabel>
+              <InputLabel>Tipo de IA</InputLabel>
               <Select
-                name="api"
-                value={empresa.api}
+                name="tipo_ia"
+                value={empresa.tipo_ia}
                 onChange={handleChange}
                 label="API de IA"
+                disabled
               >
                 {apis.map((api) => (
                   <MenuItem key={api.nome} value={api.nome.toLowerCase()}>
@@ -231,15 +279,16 @@ const SettingsPage: React.FC = () => {
             </FormControl>
 
             <FormControl sx={{ flex: 1 }}>
-              <InputLabel>Modelo</InputLabel>
+              <InputLabel>Modelo de IA</InputLabel>
               <Select
-                name="modelo"
-                value={empresa.modelo}
+                name="modelo_ia"
+                value={empresa.modelo_ia}
                 onChange={handleChange}
-                label="Modelo"
+                label="Modelo de IA"
+                disabled
               >
                 {apis
-                  .find((api) => api.nome.toLowerCase() === empresa.api)
+                  .find((api) => api.nome.toLowerCase() === empresa.tipo_ia)
                   ?.modelos.map((modelo) => (
                     <MenuItem key={modelo} value={modelo}>
                       {modelo}
@@ -249,10 +298,14 @@ const SettingsPage: React.FC = () => {
             </FormControl>
           </Box>
 
-          {/* Configurações da Assistente Virtual */}
-          <Typography variant="h6" sx={{ mt: 3, mb: 2, color: 'primary.main', fontWeight: 'bold' }}>
+          {/* Chave de API */}
+          <Typography variant="h6" sx={{ mt: 3, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>
             Chave da IA
           </Typography>
+          <Typography variant="body1" sx={{ mb: 3 }}>
+              Insira sua chave da inteligência artificial escolhida.
+          </Typography>
+
           <TextField
             label="API Key"
             name="chaveApi"
