@@ -21,6 +21,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 
 import { AuthProvider } from '../contexts/AuthContext';
 import PrivateRoute from './PrivateRoute';
+import ChatPage from '../pages/Enterprise/Chat';
 
 const AppRoute: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -34,6 +35,7 @@ const AppRoute: React.FC = () => {
       <Routes>
 
         <Route path="/" element={<HomePage />} />
+        <Route path="/chat" element={<ChatPage />} />
         <Route path="/services" element={<ServicePage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />

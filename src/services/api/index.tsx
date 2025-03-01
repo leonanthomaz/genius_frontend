@@ -24,6 +24,19 @@ export const getUserDetailsApi = async (token: string): Promise<any> => {
     }
 };
 
+export const sendMessageToAssistant = async (message: string, parameters: { [key: string]: any; }) => {
+    try {
+      const response = await api.post(`/chat`, {
+        message,
+        id_empresa: 1,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao enviar mensagem para o assistente:", error);
+      throw error;
+    }
+};
+
 // export const loginWithGoogleApi = async (token: string): Promise<string> => {
 //     try {
 //         //Implemente a lógica de login com google aqui.

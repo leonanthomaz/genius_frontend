@@ -3,6 +3,7 @@
 import { Box, Typography, Button, Container, Stack } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
 import robotImage from '@/assets/img/robot-idea.png';
+import { useNavigate } from 'react-router-dom'; // Importe useNavigate
 
 const fadeIn = keyframes`
   from {
@@ -35,6 +36,12 @@ const WaveDivider = styled(Box)`
 `;
 
 const HeroSection = () => {
+  const navigate = useNavigate(); // Obtenha a função de navegação
+
+  const handleContactClick = () => {
+    navigate('/chat'); // Redirecione para /chat
+  };
+
   return (
     <HeroContainer>
       <Container maxWidth="lg" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -46,7 +53,7 @@ const HeroSection = () => {
               gutterBottom
               sx={{
                 fontSize: { xs: '2.5rem', md: '3rem' },
-                fontFamily: "'Bebas Neue', sans-serif", // Fonte do título
+                fontFamily: "'Bebas Neue', sans-serif",
                 fontWeight: 600,
                 letterSpacing: '1px',
               }}
@@ -61,8 +68,9 @@ const HeroSection = () => {
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2, px: 4, py: 1.5, fontSize: { xs: '1rem', md: '1.1rem' } }}
+                onClick={handleContactClick} // Adicione o evento onClick
               >
-                Entre em Contato
+                Faça um teste!
               </Button>
             </Box>
           </Box>
