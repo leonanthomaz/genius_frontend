@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Grid, Paper } from '@mui/material';
 import styled from 'styled-components';
 import { sendMessageToAssistant } from '../../../services/api';
 import ChatWindow from './ChatWindow';
-import ParametersPanel from './ParametersPanel';
+// import ParametersPanel from './ParametersPanel';
 
 const ChatContainer = styled(Box)`
   width: 90%;
@@ -15,11 +15,11 @@ const ChatPage: React.FC = () => {
   const [chat, setChat] = useState<{ sender: string; text: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [typing, setTyping] = useState(false);
-  const [parameters, setParameters] = useState<{ [key: string]: any }>({
-    temperature: 0.7,
-    maxTokens: 150,
-    useContext: true,
-  });
+  // const [parameters, setParameters] = useState<{ [key: string]: any }>({
+  //   temperature: 0.7,
+  //   maxTokens: 150,
+  //   useContext: true,
+  // });
 
   const handleSendMessage = async (message: string) => {
     const newChat = [...chat, { sender: 'Você', text: message }];
@@ -28,7 +28,7 @@ const ChatPage: React.FC = () => {
     setTyping(true);
 
     try {
-      const response = await sendMessageToAssistant(message, parameters);
+      const response = await sendMessageToAssistant(message);
       setChat([...newChat, { sender: 'Assistente', text: response.response }]);
     } catch (error) {
       setChat([...newChat, { sender: 'Assistente', text: 'Erro ao obter resposta. Tente novamente!' }]);
@@ -38,9 +38,9 @@ const ChatPage: React.FC = () => {
     }
   };
 
-  const handleParameterChange = (params: { [key: string]: any }) => {
-    setParameters(params);
-  };
+  // const handleParameterChange = (params: { [key: string]: any }) => {
+  //   setParameters(params);
+  // };
 
   return (
     <ChatContainer>
@@ -56,9 +56,9 @@ const ChatPage: React.FC = () => {
             />
           </Paper>
         </Grid>
-        <Grid item xs={12} md={4}>
+        {/* <Grid item xs={12} md={4}>
           <ParametersPanel onParameterChange={handleParameterChange} />
-        </Grid>
+        </Grid> */}
       </Grid>
     </ChatContainer>
   );

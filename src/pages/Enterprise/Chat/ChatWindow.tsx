@@ -12,17 +12,6 @@ interface ChatWindowProps {
   onSendMessage: (message: string) => void;
 }
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
 const ChatWindowContainer = styled(Box)`
   flex-grow: 1;
   overflow-y: auto;
@@ -69,7 +58,7 @@ const TypingIndicator = styled(Box)`
   }
 `;
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ chat, setChat, loading, typing, onSendMessage }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({ chat, loading, typing, onSendMessage }) => {
   const [message, setMessage] = useState('');
   const chatRef = useRef<HTMLDivElement>(null);
 

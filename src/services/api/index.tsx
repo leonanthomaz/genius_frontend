@@ -24,7 +24,7 @@ export const getUserDetailsApi = async (token: string): Promise<any> => {
     }
 };
 
-export const sendMessageToAssistant = async (message: string, parameters: { [key: string]: any; }) => {
+export const sendMessageToAssistant = async (message: string) => {
     try {
       const response = await api.post(`/chat`, {
         message,

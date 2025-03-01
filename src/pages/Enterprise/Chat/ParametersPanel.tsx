@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import { Paper, Typography, TextField, FormControlLabel, Switch, Box } from '@mui/material';
+import { Paper, Typography, TextField, FormControlLabel, Switch } from '@mui/material';
 import styled from 'styled-components';
 
 interface ParametersPanelProps {
