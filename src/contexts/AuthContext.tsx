@@ -22,6 +22,7 @@ interface User {
     empresa_modelo_ia: string | null; 
     empresa_token_ia: string | null; 
     empresa_tipo_negocio: string | null;
+    is_admin: boolean | null;
 }
 
 
@@ -42,6 +43,7 @@ interface AuthContextType {
     getToken: () => string | null;
     getUser: () => User | null;
     isAuthenticated: () => boolean;
+    isAdmin : () => boolean;
 }
 
 type AuthAction =
@@ -162,9 +164,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const getToken = () => state.token;
     const getUser = () => state.user;
     const isAuthenticated = () => state.isAuthenticated;
+    const isAdmin = () => state.user?.is_admin || false;
 
     // const value = { state, dispatch, login, logout, loginWithGoogle, getToken, getUser, isAuthenticated };
-    const value = { state, dispatch, login, logout, getToken, getUser, isAuthenticated };
+    const value = { state, dispatch, login, logout, getToken, getUser, isAuthenticated, isAdmin  };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
