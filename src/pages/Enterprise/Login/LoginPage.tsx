@@ -1,21 +1,22 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, TextField, Paper, useMediaQuery, useTheme, Grid } from '@mui/material';
+import { Box, Typography, Button, TextField, Paper, useMediaQuery, useTheme, Grid, Stack, CircularProgress, Divider } from '@mui/material';
 import { useMuiTheme } from '../../../styles/muiTheme';
-// import GoogleIcon from '@mui/icons-material/Google';
+import GoogleIcon from '@mui/icons-material/Google';
 import LoginImage from '@/assets/img/robot-smart-rf.png';
 import { useAuth } from '../../../contexts/AuthContext';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
-    // const { login, loginWithGoogle } = useAuth();
-    const { login } = useAuth();
+    const { login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
     const theme = useMuiTheme();
     const muiTheme = useTheme();
     const isSmallScreen = useMediaQuery(muiTheme.breakpoints.down('sm'));
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false); // Estado para o loading
 
     const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
         setUsername(event.target.value);
@@ -26,27 +27,30 @@ const LoginPage: React.FC = () => {
     };
 
     const handleLogin = async () => {
+        setIsLoading(true); // Ativa o loading
         try {
             let response = await login(username, password);
-            console.log(response)
+            console.log(response);
             navigate('/dashboard');
         } catch (error) {
             toast.error("Erro ao fazer login. Verifique suas credenciais");
+        } finally {
+            setIsLoading(false); // Desativa o loading
         }
     };
 
-    // const handleGoogleLogin = async () => {
-    //     try {
-    //         // Dados mocados para o Google Login
-    //         const mockGoogleResponse = {
-    //             credential: 'mocked_google_token',
-    //         };
-    //         await loginWithGoogle(mockGoogleResponse.credential);
-    //         navigate('/dashboard');
-    //     } catch (error) {
-    //         toast.error("Erro ao fazer login com google");
-    //     }
-    // };
+    const handleGoogleLogin = async () => {
+        try {
+            // Dados mocados para o Google Login
+            const mockGoogleResponse = {
+                credential: 'mocked_google_token',
+            };
+            await loginWithGoogle(mockGoogleResponse.credential);
+            navigate('/dashboard');
+        } catch (error) {
+            toast.error("Erro ao fazer login com google");
+        }
+    };
 
     return (
         <Box
@@ -109,11 +113,21 @@ const LoginPage: React.FC = () => {
                             fullWidth
                             sx={{ marginTop: theme.spacing(3), fontWeight: 'bold', fontSize: '1.1rem' }}
                             onClick={handleLogin}
+                            disabled={isLoading} // Desabilita o botão durante o loading
                         >
-                            Entrar
+                            {isLoading ? <CircularProgress size={24} /> : 'Entrar'}
                         </Button>
 
-                        {/* <Stack justifyContent="center" sx={{ marginTop: theme.spacing(2) }}>
+                        {/* Divisão "OU" */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
+                            <Divider sx={{ flexGrow: 1 }} />
+                            <Typography variant="body2" sx={{ mx: 2, color: 'text.secondary' }}>
+                                OU
+                            </Typography>
+                            <Divider sx={{ flexGrow: 1 }} />
+                        </Box>
+
+                        <Stack justifyContent="center" sx={{ marginTop: theme.spacing(2) }}>
                             <Button
                                 variant="outlined"
                                 onClick={handleGoogleLogin}
@@ -122,7 +136,16 @@ const LoginPage: React.FC = () => {
                             >
                                 Entrar com Google
                             </Button>
-                        </Stack> */}
+                        </Stack>
+
+                        {/* Link para voltar à página inicial */}
+                        <Box sx={{ textAlign: 'center', mt: 2 }}>
+                            <Typography variant="body2">
+                                <Link to="/" style={{ textDecoration: 'none', color: theme.palette.primary.main }}>
+                                    Voltar à página inicial
+                                </Link>
+                            </Typography>
+                        </Box>
                     </Paper>
                 </Grid>
             </Grid>

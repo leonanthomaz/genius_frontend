@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext, ReactNode, useEffect } from 'react';
 // import { loginApi, getUserDetailsApi, loginWithGoogleApi } from '../services/api';
-import { loginApi, getUserDetailsApi } from '../services/api';
+import { loginApi, getUserDetailsApi, loginWithGoogleApi } from '../services/api';
 import { toast } from 'react-toastify';
 
 // src/contexts/AuthContext.tsx
@@ -38,7 +38,7 @@ interface AuthContextType {
     state: AuthState;
     dispatch: React.Dispatch<AuthAction>;
     login: (username: string, password: string) => Promise<void>;
-    // loginWithGoogle: (token: string) => Promise<void>;
+    loginWithGoogle: (token: string) => Promise<void>;
     logout: () => void;
     getToken: () => string | null;
     getUser: () => User | null;
@@ -138,21 +138,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     };
 
-    // const loginWithGoogle = async (token: string) => {
-    //     dispatch({ type: 'LOGIN_REQUEST' });
-    //     try {
-    //         const apiToken = await loginWithGoogleApi(token);
-    //         localStorage.setItem('USER_TOKEN', apiToken);
-    //         const user = await getUserDetailsApi(apiToken);
-    //         localStorage.setItem('CURRENT_USER', JSON.stringify(user));
-    //         dispatch({ type: 'LOGIN_SUCCESS', payload: { token: apiToken, user } });
-    //         toast.success('Login com Google bem-sucedido!');
-    //     } catch (error: any) {
-    //         console.error('Erro ao fazer login com Google:', error);
-    //         dispatch({ type: 'LOGIN_FAILURE', payload: 'Erro ao autenticar com Google.' });
-    //         toast.error('Erro ao autenticar com Google.');
-    //     }
-    // };
+    const loginWithGoogle = async (token: string) => {
+        dispatch({ type: 'LOGIN_REQUEST' });
+        try {
+            const apiToken = await loginWithGoogleApi(token);
+            localStorage.setItem('USER_TOKEN', apiToken);
+            const user = await getUserDetailsApi(apiToken);
+            localStorage.setItem('CURRENT_USER', JSON.stringify(user));
+            dispatch({ type: 'LOGIN_SUCCESS', payload: { token: apiToken, user } });
+            toast.success('Login com Google bem-sucedido!');
+        } catch (error: any) {
+            console.error('Erro ao fazer login com Google:', error);
+            dispatch({ type: 'LOGIN_FAILURE', payload: 'Erro ao autenticar com Google.' });
+            toast.error('Erro ao autenticar com Google.');
+        }
+    };
 
     const logout = () => {
         localStorage.removeItem('USER_TOKEN');
@@ -166,8 +166,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const isAuthenticated = () => state.isAuthenticated;
     const isAdmin = () => state.user?.is_admin || false;
 
-    // const value = { state, dispatch, login, logout, loginWithGoogle, getToken, getUser, isAuthenticated };
-    const value = { state, dispatch, login, logout, getToken, getUser, isAuthenticated, isAdmin  };
+    const value = { state, dispatch, login, logout, loginWithGoogle, getToken, getUser, isAuthenticated, isAdmin  };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

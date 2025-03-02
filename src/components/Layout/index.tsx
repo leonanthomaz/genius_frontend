@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
-import Logo from '@/assets/img/logo-sf.png';
+import Logo from '@/assets/img/logo_oficial.png';
 import { LayoutContainer, MainContent } from './LayoutStyles';
 
 interface LayoutProps {

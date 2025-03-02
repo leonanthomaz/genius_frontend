@@ -11,6 +11,8 @@ import {
     ListItem,
     ListItemButton,
     ListItemText,
+    Divider,
+    Button,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -20,26 +22,33 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Logo from '@/assets/img/logo-sf.png';
+import Logo from '@/assets/img/logo_oficial.png';
 import { useAuth } from '../../../contexts/AuthContext';
+import React from 'react';
 
 const Navbar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [bgColor, setBgColor] = useState('transparent');
+    const [isVisible, setIsVisible] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
     const { logout, isAuthenticated } = useAuth();
 
     useEffect(() => {
+        let prevScrollPos = window.pageYOffset;
+
         const handleScroll = () => {
-            setBgColor(window.scrollY > 50 ? 'rgba(255, 255, 255, 0.95)' : 'transparent');
+            const currentScrollPos = window.pageYOffset;
+            const scrollingDown = prevScrollPos < currentScrollPos;
+
+            setIsVisible(!scrollingDown || currentScrollPos <= 50);
+            prevScrollPos = currentScrollPos;
         };
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const handleLoginClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const handleLoginClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         if (isAuthenticated()) {
             logout();
@@ -50,23 +59,28 @@ const Navbar = () => {
     };
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (event.type === 'keydown') {
-          const keyboardEvent = event as React.KeyboardEvent;
-          if (keyboardEvent.key === 'Tab' || keyboardEvent.key === 'Shift') {
-              return;
-          }
-      }
-      setDrawerOpen(open);
-  };
+        if (event.type === 'keydown') {
+            const keyboardEvent = event as React.KeyboardEvent;
+            if (keyboardEvent.key === 'Tab' || keyboardEvent.key === 'Shift') {
+                return;
+            }
+        }
+        setDrawerOpen(open);
+    };
 
     const list = (
-        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+        <Box sx={{ width: 250, height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#e0f7fa' }} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
+            <Box sx={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <img src={Logo} alt="Logo" style={{ height: '50px', marginRight: '8px', borderRadius: '50%' }} />
+                    <Typography variant="h6">Genius</Typography>
+                </Box>
                 <IconButton onClick={toggleDrawer(false)}>
                     <CloseIcon />
                 </IconButton>
             </Box>
-            <List>
+            <Divider />
+            <List sx={{ flexGrow: 1 }}>
                 <ListItem disablePadding>
                     <ListItemButton component={Link} to="/">
                         <HomeIcon sx={{ marginRight: '8px' }} />
@@ -85,29 +99,41 @@ const Navbar = () => {
                         <ListItemText primary="Contato" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component="a" onClick={handleLoginClick}> {/* Correção aqui */}
-                        {isAuthenticated() ? <LogoutIcon sx={{ marginRight: '8px' }} /> : <LoginIcon sx={{ marginRight: '8px' }} />}
-                        <ListItemText primary={isAuthenticated() ? 'Logout' : 'Login'} />
-                    </ListItemButton>
-                </ListItem>
             </List>
+            <Divider />
+            <Box sx={{ padding: '16px' }}>
+                <Button variant="contained" color="primary" fullWidth onClick={handleLoginClick}>
+                    {isAuthenticated() ? 'Logout' : 'Entrar'}
+                </Button>
+            </Box>
         </Box>
     );
 
     return (
-        <AppBar position="fixed" sx={{ background: bgColor, transition: 'background 0.3s ease-in-out' }}>
+        <AppBar
+            position="fixed"
+            sx={{
+                background: 'white',
+                transition: 'top 0.3s ease-in-out',
+                top: isVisible ? '0' : '-100px',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            }}
+        >
             <Container maxWidth="lg">
                 <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <img src={Logo} alt="Logo" style={{ height: '100px', marginRight: '12px' }} />
+                    <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
+                        <a href="/">
+                            <img src={Logo} alt="Logo" style={{ height: '90px', marginRight: '12px', borderRadius: '50%' }} />
+                        </a>
                         <Typography variant="h6">Genius</Typography>
                     </Box>
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ display: { xs: 'none', md: 'flex', justifyContent: 'center', alignItems: 'center' } }}>
                         <Link
                             to="/"
                             style={{
-                                fontSize: '1.2rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                fontSize: '1rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
                                 marginLeft: '20px',
@@ -119,7 +145,9 @@ const Navbar = () => {
                         <Link
                             to="/services"
                             style={{
-                                fontSize: '1.2rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                fontSize: '1rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
                                 marginLeft: '20px',
@@ -131,7 +159,9 @@ const Navbar = () => {
                         <Link
                             to="/contact"
                             style={{
-                                fontSize: '1.2rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                fontSize: '1rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
                                 marginLeft: '20px',
@@ -143,7 +173,9 @@ const Navbar = () => {
                         <Link
                             to={isAuthenticated() ? '/' : '/login'}
                             style={{
-                                fontSize: '1.2rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                fontSize: '1rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
                                 marginLeft: '20px',
@@ -159,7 +191,7 @@ const Navbar = () => {
                         <IconButton onClick={toggleDrawer(true)}>
                             <MenuIcon />
                         </IconButton>
-                        <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+                        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
                             {list}
                         </Drawer>
                     </Box>

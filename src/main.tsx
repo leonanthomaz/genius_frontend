@@ -24,28 +24,30 @@ const MainApp = () => {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_API_GOOGLE_ID_CLIENT}>
       <AuthProvider>
-        <MuiThemeProvider theme={muiTheme}>
-          <CssBaseline />
-          <StyledThemeProvider theme={theme}>
-            <GlobalStyles />
-            <Router>
-              <GlobalProvider>
-                <App />
-                <ToastContainer
-                  position="top-right"
-                  autoClose={5000}
-                  hideProgressBar={false}
-                  newestOnTop={true}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                />
-              </GlobalProvider>
-            </Router>
-          </StyledThemeProvider>
-        </MuiThemeProvider>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_API_GOOGLE_ID_CLIENT}>
+          <MuiThemeProvider theme={muiTheme}>
+            <CssBaseline />
+            <StyledThemeProvider theme={theme}>
+              <GlobalStyles />
+              <Router>
+                <GlobalProvider>
+                  <App />
+                  <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={true}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                  />
+                </GlobalProvider>
+              </Router>
+            </StyledThemeProvider>
+          </MuiThemeProvider>
+        </GoogleOAuthProvider>
       </AuthProvider>
     </GoogleOAuthProvider>
   );
