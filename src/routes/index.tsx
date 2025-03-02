@@ -15,15 +15,11 @@ import AnalyticsPage from '../pages/Dashboard/AnalyticsPage';
 import DashboardPage from '../pages/Dashboard/DashboardPage';
 import SettingsPage from '../pages/Dashboard/SettingsPage';
 
-
 import NotFoundPage from '../pages/NotFoundPage';
 
 import { AuthProvider } from '../contexts/AuthContext';
 import PrivateRoute from './PrivateRoute';
-import AdminRoute from './AdminRoute';  // Novo componente para proteger rotas de admin
 import ChatPage from '../pages/Enterprise/Chat';
-import AdminSettingsPage from '../pages/Admin/AdminSettingsPage';
-import AdminDashboardPage from '../pages/Admin/AdminDashboardPage';
 
 const AppRoute: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -68,21 +64,6 @@ const AppRoute: React.FC = () => {
             <Route path="/dashboard/whatsapp" element={<WhatsappPage />} />
             <Route path="/dashboard/analytics" element={<AnalyticsPage />} />
             <Route path="/dashboard/finance" element={<FinancePage />} />
-          </Route>
-        </Route>
-
-        {/* Rotas protegidas para admins */}
-        <Route element={<AdminRoute />}>
-          <Route
-            path="/admin"
-            element={
-              <>
-                <AdminDashboardPage />
-                <Outlet />
-              </>
-            }
-          >
-            <Route path="/admin/settings" element={<AdminSettingsPage />} />
           </Route>
         </Route>
 

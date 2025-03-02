@@ -7,12 +7,7 @@ const PrivateRoute: React.FC = () => {
 
   // Se o usuário não estiver autenticado, redireciona para a página de login
   if (!state.isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // Se o usuário for admin, redireciona para a página de admin
-  if (state.user?.is_admin) {
-    return <Navigate to="/admin" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // Se o usuário for autenticado mas não for admin, renderiza o conteúdo do dashboard
