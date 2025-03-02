@@ -102,7 +102,13 @@ const Navbar = () => {
             </List>
             <Divider />
             <Box sx={{ padding: '16px' }}>
-                <Button variant="contained" color="primary" fullWidth onClick={handleLoginClick}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    component={Link}
+                    to={isAuthenticated() ? '/' : '/login'}
+                    >
                     {isAuthenticated() ? 'Logout' : 'Entrar'}
                 </Button>
             </Box>
