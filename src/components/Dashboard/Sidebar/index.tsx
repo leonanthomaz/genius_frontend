@@ -7,7 +7,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import Logo from '@/assets/img/logo-sf.png';
+import Logo from '@/assets/img/logo_oficial_sem_fundo.png';
 import React from "react";
 
 interface SidebarProps {
