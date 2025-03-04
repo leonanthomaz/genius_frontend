@@ -13,8 +13,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ handleDrawerToggle }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const { getUser, state, logout, isAuthenticated } = useAuth(); // Obtém o state
-    const user = getUser(); // Obtenha o usuário
+    const { state, logout, isAuthenticated } = useAuth(); // Obtém o state
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
