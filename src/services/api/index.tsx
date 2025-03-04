@@ -29,7 +29,7 @@ export const sendMessageToAssistant = async (message: string) => {
     try {
       const response = await api.post(`/chat`, {
         message,
-        id_empresa: 1,
+        company_id: 1,
       });
       return response.data;
     } catch (error) {
@@ -61,10 +61,9 @@ export const updateUserApi = async (token: string, userId: number, userData: any
     }
 };
 
-
-export const getEmpresaApi = async (token: string, empresaId: number): Promise<CompanyInfo> => {
+export const getCompanyApi = async (token: string, companyId: number): Promise<CompanyInfo> => {
     try {
-        const response: AxiosResponse<CompanyInfo> = await api.get(`/company/${empresaId}`, {
+        const response: AxiosResponse<CompanyInfo> = await api.get(`/company/${companyId}`, {
             headers: { Authorization: `Bearer ${token}` },
         });
         return response.data;
@@ -73,9 +72,9 @@ export const getEmpresaApi = async (token: string, empresaId: number): Promise<C
     }
 };
 
-export const updateEmpresaApi = async (token: string, empresaId: number, empresaData: any): Promise<CompanyInfo> => {
+export const updateCompanyApi = async (token: string, companyId: number, companyData: any): Promise<CompanyInfo> => {
     try {
-        const response: AxiosResponse<CompanyInfo> = await api.put(`/company/${empresaId}`, empresaData, {
+        const response: AxiosResponse<CompanyInfo> = await api.put(`/company/${companyId}`, companyData, {
             headers: { Authorization: `Bearer ${token}` },
         });
         return response.data;

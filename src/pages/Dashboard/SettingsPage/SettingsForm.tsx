@@ -10,7 +10,7 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
-  SelectChangeEvent, // Importar o tipo SelectChangeEvent
+  SelectChangeEvent,
 } from '@mui/material';
 import { CloudUpload } from '@mui/icons-material';
 
@@ -288,7 +288,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
       />
 
       {/* Botão de envio */}
-      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={(e) => handleSubmit(e)}>
         Salvar Configurações
       </Button>
     </form>

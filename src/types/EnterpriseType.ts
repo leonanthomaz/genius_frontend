@@ -4,6 +4,11 @@ export interface UserInfo {
     username: string;
     is_admin: boolean;
     company_id: number | null;
+    created_at: string;
+    updated_at: string | null;
+    deleted_at: string | null;
+    updated_by: number | null;
+    deleted_by: number | null;
 }
 
 export interface CompanyInfo {
@@ -22,6 +27,12 @@ export interface CompanyInfo {
     ai_model?: string | null;
     ai_token?: string | null;
     business_type?: string | null;
+    status: string;
+    created_at: string;
+    updated_at: string | null;
+    deleted_at: string | null;
+    updated_by: number | null;
+    deleted_by: number | null;
 }
 
 export interface MeResponse {
@@ -42,6 +53,10 @@ export interface ProdutoType {
     company?: CompanyInfo;
     code: string;
     created_at?: string;
+    updated_at?: string | null;
+    deleted_at?: string | null;
+    updated_by?: number | null;
+    deleted_by?: number | null;
 }
 
 export interface ServicoType {
@@ -55,6 +70,10 @@ export interface ServicoType {
     company?: CompanyInfo;
     code: string;
     created_at?: string;
+    updated_at?: string | null;
+    deleted_at?: string | null;
+    updated_by?: number | null;
+    deleted_by?: number | null;
 }
 
 export interface AssistenteType {
@@ -68,5 +87,9 @@ export interface AssistenteType {
     estimated_value?: number | null;
     notes?: string | null;
     created_at?: string;
+    updated_at?: string | null;
+    deleted_at?: string | null;
+    updated_by?: number | null;
+    deleted_by?: number | null;
     company?: CompanyInfo;
 }
