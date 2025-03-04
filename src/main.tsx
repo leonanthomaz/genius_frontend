@@ -8,49 +8,47 @@ import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { GlobalStyles } from './styles/globalStyles';
 import { useMuiTheme } from './styles/muiTheme';
 import { theme } from './styles/theme';
-import { GlobalProvider } from './contexts/GlobalContext.tsx';
+import { GlobalProvider } from './contexts/GlobalContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const Root = () => {
-  return (
-    <MainApp />
-  );
+    return (
+        <MainApp />
+    );
 };
 
 const MainApp = () => {
-  const muiTheme = useMuiTheme();
+    const muiTheme = useMuiTheme();
 
-  return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_API_GOOGLE_ID_CLIENT}>
-      <AuthProvider>
+    return (
         <GoogleOAuthProvider clientId={import.meta.env.VITE_API_GOOGLE_ID_CLIENT}>
-          <MuiThemeProvider theme={muiTheme}>
-            <CssBaseline />
-            <StyledThemeProvider theme={theme}>
-              <GlobalStyles />
-              <Router>
-                <GlobalProvider>
-                  <App />
-                  <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={true}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                  />
-                </GlobalProvider>
-              </Router>
-            </StyledThemeProvider>
-          </MuiThemeProvider>
+            <MuiThemeProvider theme={muiTheme}>
+                <CssBaseline />
+                <StyledThemeProvider theme={theme}>
+                    <GlobalStyles />
+                    <GlobalProvider> 
+                        <AuthProvider>
+                            <Router>
+                                <App />
+                                <ToastContainer
+                                    position="top-right"
+                                    autoClose={5000}
+                                    hideProgressBar={false}
+                                    newestOnTop={true}
+                                    closeOnClick
+                                    rtl={false}
+                                    pauseOnFocusLoss
+                                    draggable
+                                    pauseOnHover
+                                />
+                            </Router>
+                        </AuthProvider>
+                    </GlobalProvider>
+                </StyledThemeProvider>
+            </MuiThemeProvider>
         </GoogleOAuthProvider>
-      </AuthProvider>
-    </GoogleOAuthProvider>
-  );
+    );
 };
 
 createRoot(document.getElementById('root')!).render(<Root />);

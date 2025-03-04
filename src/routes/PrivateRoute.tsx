@@ -1,17 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { useAuth } from '../contexts/AuthContext';
+import LoadingPage from '../components/Loading/LoadingPage';
 
 const PrivateRoute: React.FC = () => {
-  const { state } = useAuth();
+    const { state, isAuthenticated } = useAuth();
+    const [isAuthChecked, setIsAuthChecked] = useState(false); // Para saber se o token foi verificado
 
-  // Se o usuário não estiver autenticado, redireciona para a página de login
-  if (!state.isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
+    // Verifica o cookie diretamente no PrivateRoute
+    useEffect(() => {
+        const token = Cookies.get('geniusToken');
+        if (token) {
+            isAuthenticated();
+        }
+        setIsAuthChecked(true);
+    }, []);
 
-  // Se o usuário for autenticado mas não for admin, renderiza o conteúdo do dashboard
-  return <Outlet />;
+    // Mostra o loading enquanto está verificando o token
+    if (!isAuthChecked || state.isLoading) {
+        return <LoadingPage />;
+    }
+
+    // Redireciona caso o usuário não esteja autenticado
+    if (!isAuthenticated()) {
+        return <Navigate to="/" replace />;
+    }
+
+    return <Outlet />;
 };
 
 export default PrivateRoute;

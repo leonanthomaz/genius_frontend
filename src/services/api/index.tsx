@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import { CompanyInfo, MeResponse } from '../../types/EnterpriseType';
 
 export const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -37,10 +38,47 @@ export const sendMessageToAssistant = async (message: string) => {
     }
 };
 
-export const loginWithGoogleApi = async (token: string): Promise<string> => {
+export const loginWithGoogleApi = async (token: string): Promise<MeResponse> => {
     try {
-        //Implemente a lógica de login com google aqui.
-        return "token_mockado";
+        const response: AxiosResponse<MeResponse> = await api.get('/me', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export const updateUserApi = async (token: string, userId: number, userData: any): Promise<any> => {
+    try {
+        const response: AxiosResponse<any> = await api.patch(`/admin/usuarios/${userId}`, userData, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export const getEmpresaApi = async (token: string, empresaId: number): Promise<CompanyInfo> => {
+    try {
+        const response: AxiosResponse<CompanyInfo> = await api.get(`/company/${empresaId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateEmpresaApi = async (token: string, empresaId: number, empresaData: any): Promise<CompanyInfo> => {
+    try {
+        const response: AxiosResponse<CompanyInfo> = await api.put(`/company/${empresaId}`, empresaData, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
     } catch (error) {
         throw error;
     }

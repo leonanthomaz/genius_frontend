@@ -25,17 +25,12 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
 
   return (
-    <GlobalContext.Provider
-      value={{
-        isLoading,
-        setLoading,
-      }}
-    >
-      {/* Renderiza a página de loading se estiver carregando */}
-      {isLoading ? <LoadingPage /> : children}
-
+    <GlobalContext.Provider value={{ isLoading, setLoading }}>
+      {children}
+      {isLoading && <LoadingPage />}
     </GlobalContext.Provider>
   );
+  
 };
 
 export const useGlobal = (): GlobalContextType => {

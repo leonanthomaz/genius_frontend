@@ -1,343 +1,96 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Checkbox,
-  FormControlLabel,
-  SelectChangeEvent,
-} from '@mui/material';
-import { CloudUpload } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
 import Layout from '../../../components/Layout';
 import { useAuth } from '../../../contexts/AuthContext';
+import SettingsForm from './SettingsForm'; // Importe o novo componente
 
 const SettingsPage: React.FC = () => {
-  const { getUser } = useAuth();
-  const user = getUser(); // Obtenha o usuário
+    const { getUser } = useAuth();
+    const user = getUser();
 
-  // Dados da empresa (vindos do backend)
-  const [empresa, setEmpresa] = useState({
-    nome: user?.empresa_nome || '',
-    cnpj: user?.empresa_cnpj || '',
-    email: user?.empresa_email || '',
-    telefone: user?.empresa_telefone || '',
-    endereco: user?.empresa_endereco || '',
-    site: user?.empresa_website || '',
-    descricao: user?.empresa_descricao || '',
-    ramo: user?.empresa_ramo || '',
-    endpoint_entrada: user?.empresa_endpoint_entrada || '',
-    endpoint_saida: user?.empresa_endpoint_saida || '',
-    tipo_ia: user?.empresa_tipo_ia || '',
-    modelo_ia: user?.empresa_modelo_ia || '',
-    chaveApi: user?.empresa_token_ia || '',
-    tipoNegocio: user?.empresa_tipo_negocio || '',
-  });
+    const [company, setCompany] = useState({
+        name: user?.company.name || '',
+        cnpj: user?.company.cnpj || '',
+        email: user?.company.email || '',
+        phone: user?.company.phone || '',
+        address: user?.company.address || '',
+        website: user?.company.website || '',
+        description: user?.company.description || '',
+        industry: user?.company.industry || '',
+        input_endpoint: user?.company.input_endpoint || '',
+        output_endpoint: user?.company.output_endpoint || '',
+        ai_type: user?.company.ai_type || '',
+        ai_model: user?.company.ai_model || '',
+        ai_token: user?.company.ai_token || '',
+        business_type: user?.company.business_type || '',
+    });
 
-  
+    const [excelFile, setExcelFile] = useState<File | null>(null);
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [dataSource, setDataSource] = useState<'endpoint' | 'upload'>('upload');
 
-  const [arquivoExcel, setArquivoExcel] = useState<File | null>(null);
-  const [aceitoTermos, setAceitoTermos] = useState(false);
-  const [fonteDados, setFonteDados] = useState<'endpoint' | 'upload'>('upload'); // Estado para controlar a fonte de dados
+    const apis = [
+        { name: 'OpenAI', models: ['gpt-3.5-turbo', 'gpt-4'] },
+        { name: 'Gemini', models: ['gemini-1.5-flash'] },
+    ];
 
-  // Opções de API e modelos
-  const apis = [
-    { nome: 'OpenAI', modelos: ['gpt-3.5-turbo', 'gpt-4'] },
-    { nome: 'Gemini', modelos: ['gemini-1.5-flash'] },
-  ];
+    useEffect(() => {
+        if (company.business_type === 'servico') {
+            setCompany((prev) => ({
+                ...prev,
+                ai_type: 'gemini',
+                ai_model: 'gemini-1.5-flash',
+                ai_token: '',
+            }));
+        } else {
+            setCompany((prev) => ({
+                ...prev,
+                ai_type: 'openai',
+                ai_model: 'gpt-3.5-turbo',
+            }));
+        }
+    }, [company.business_type]);
 
-  // Efeito para atualizar as opções de IA conforme o tipo de negócio
-  useEffect(() => {
-    if (empresa.tipoNegocio === 'servico') {
-      setEmpresa((prev) => ({
-        ...prev,
-        tipo_ia: 'gemini',
-        modelo_ia: 'gemini-1.5-flash',
-        chaveApi: '', // Limpa a chave da OpenAI
-      }));
-    } else {
-      setEmpresa((prev) => ({
-        ...prev,
-        tipo_ia: 'openai',
-        modelo_ia: 'gpt-3.5-turbo',
-      }));
-    }
-  }, [empresa.tipoNegocio]);
+    const handleCompanyChange = (newCompany: any) => {
+        setCompany(newCompany);
+    };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
-    const { name, value } = event.target;
-    setEmpresa((prev) => ({ ...prev, [name]: value }));
-  };
+    const handleExcelFileChange = (newExcelFile: File | null) => {
+        setExcelFile(newExcelFile);
+    };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setArquivoExcel(event.target.files[0]);
-    }
-  };
+    const handleTermsAcceptedChange = (newTermsAccepted: boolean) => {
+        setTermsAccepted(newTermsAccepted);
+    };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+    const handleDataSourceChange = (newDataSource: 'endpoint' | 'upload') => {
+        setDataSource(newDataSource);
+    };
 
-    // Validação dos campos obrigatórios
-    if (fonteDados === 'endpoint' && !empresa.endpoint_entrada) {
-      alert('O campo Endpoint de Entrada é obrigatório!');
-      return;
-    }
-
-    if (fonteDados === 'upload' && !arquivoExcel) {
-      alert('O upload de arquivo Excel é obrigatório!');
-      return;
-    }
-
-    if (!aceitoTermos) {
-      alert('Você deve aceitar os termos de uso!');
-      return;
-    }
-
-    // Aqui você pode enviar os dados para o backend
-    console.log('Dados enviados:', { ...empresa, arquivoExcel });
-    alert('Configurações salvas com sucesso!');
-  };
-
-  return (
-    <Layout withSidebar={true}>
-      <Box>
-        <Typography variant="h5" sx={{ mt: 8, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>
-          Configurações da Empresa
-        </Typography>
-        <Typography variant="body1" sx={{ mb: 3 }}>
-          Aqui está um resumo das atividades recentes e informações importantes.
-        </Typography>
-
-        <form onSubmit={handleSubmit}>
-          {/* Campos bloqueados */}
-          <TextField
-            label="Nome da Empresa"
-            value={empresa.nome}
-            fullWidth
-            disabled
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="CNPJ"
-            value={empresa.cnpj}
-            fullWidth
-            disabled
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Email"
-            value={empresa.email}
-            fullWidth
-            disabled
-            sx={{ mb: 2 }}
-          />
-
-          {/* Campos editáveis */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <TextField
-              label="Telefone"
-              name="telefone"
-              value={empresa.telefone}
-              onChange={handleChange}
-              sx={{ flex: 1 }}
-            />
-            <TextField
-              label="Site Corporativo"
-              name="site"
-              value={empresa.site}
-              onChange={handleChange}
-              sx={{ flex: 1 }}
-            />
-          </Box>
-
-          <TextField
-            label="Endereço"
-            name="endereco"
-            value={empresa.endereco}
-            onChange={handleChange}
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-
-          <TextField
-            label="Descrição da Empresa"
-            name="descricao"
-            value={empresa.descricao}
-            onChange={handleChange}
-            fullWidth
-            multiline
-            rows={4}
-            sx={{ mb: 2 }}
-          />
-
-          {/* Configurações da Assistente Virtual */}
-          <Typography variant="h6" sx={{ mt: 3, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>
-            Fonte de Dados
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-              Escolha a fonte de dados para seus serviços ou produtos.
-          </Typography>
-
-          {/* Escolha da fonte de dados */}
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Tipo de Fonte</InputLabel>
-            <Select
-              value={fonteDados}
-              onChange={(e) => setFonteDados(e.target.value as 'endpoint' | 'upload')}
-              label="Fonte de Dados"
-              required
-            >
-              <MenuItem value="upload">Upload de Arquivo Excel</MenuItem>
-              <MenuItem value="endpoint">Endpoint</MenuItem>
-            </Select>
-          </FormControl>
-
-          {/* Campo Endpoint (visível apenas se a fonte for endpoint) */}
-          {fonteDados === 'endpoint' && (
-            <>
-              <TextField
-                label="Endpoint de Entrada"
-                name="endpoint_entrada"
-                value={empresa.endpoint_entrada}
-                onChange={handleChange}
-                fullWidth
-                sx={{ mb: 2 }}
-                placeholder="Ex: https://api.empresa.com/dados"
-                required
-              />
-              <TextField
-                label="Aguardando..."
-                name="endpoint_saida"
-                value={empresa.endpoint_saida}
-                onChange={handleChange}
-                fullWidth
-                sx={{ mb: 2 }}
-                placeholder="Ex: https://api.empresa.com/dados"
-                disabled
-              />
-            </>
-          )}
-
-          {/* Upload de Arquivo Excel (visível apenas se a fonte for upload) */}
-          {fonteDados === 'upload' && (
-            <Box sx={{ mb: 2 }}>
-              <Button
-                variant="outlined"
-                component="label"
-                startIcon={<CloudUpload />}
-                sx={{ mb: 1 }}
-              >
-                Upload de Arquivo Excel
-                <input type="file" hidden accept=".xlsx, .xls" onChange={handleFileChange} required />
-              </Button>
-              {arquivoExcel && (
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  Arquivo selecionado: {arquivoExcel.name}
+    return (
+        <Layout withSidebar={true}>
+            <Box>
+                <Typography variant="h5" sx={{ mt: 8, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>
+                    Configurações da Empresa
                 </Typography>
-              )}
+                <Typography variant="body1" sx={{ mb: 3 }}>
+                    Aqui está um resumo das atividades recentes e informações importantes.
+                </Typography>
+
+                <SettingsForm
+                    company={company}
+                    excelFile={excelFile}
+                    termsAccepted={termsAccepted}
+                    dataSource={dataSource}
+                    apis={apis}
+                    onCompanyChange={handleCompanyChange}
+                    onExcelFileChange={handleExcelFileChange}
+                    onTermsAcceptedChange={handleTermsAcceptedChange}
+                    onDataSourceChange={handleDataSourceChange}
+                />
             </Box>
-          )}
-
-          {/* Tipo de Negócio */}
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Tipo de Negócio</InputLabel>
-            <Select
-              name="tipoNegocio"
-              value={empresa.tipoNegocio}
-              onChange={handleChange}
-              label="Tipo de Negócio"
-              required
-            >
-              <MenuItem value="produto">Produtos</MenuItem>
-              <MenuItem value="servico">Serviços</MenuItem>
-              <MenuItem value="produto-servico">Produtos e Serviços</MenuItem>
-            </Select>
-          </FormControl>
-
-          {/* Configurações de API e Modelo */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <FormControl sx={{ flex: 1 }}>
-              <InputLabel>Tipo de IA</InputLabel>
-              <Select
-                name="tipo_ia"
-                value={empresa.tipo_ia}
-                onChange={handleChange}
-                label="API de IA"
-                disabled
-              >
-                {apis.map((api) => (
-                  <MenuItem key={api.nome} value={api.nome.toLowerCase()}>
-                    {api.nome}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl sx={{ flex: 1 }}>
-              <InputLabel>Modelo de IA</InputLabel>
-              <Select
-                name="modelo_ia"
-                value={empresa.modelo_ia}
-                onChange={handleChange}
-                label="Modelo de IA"
-                disabled
-              >
-                {apis
-                  .find((api) => api.nome.toLowerCase() === empresa.tipo_ia)
-                  ?.modelos.map((modelo) => (
-                    <MenuItem key={modelo} value={modelo}>
-                      {modelo}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-          </Box>
-
-          {/* Chave de API */}
-          <Typography variant="h6" sx={{ mt: 3, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>
-            Chave da IA
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-              Insira sua chave da inteligência artificial escolhida.
-          </Typography>
-
-          <TextField
-            label="API Key"
-            name="chaveApi"
-            value={empresa.chaveApi}
-            onChange={handleChange}
-            fullWidth
-            sx={{ mb: 2 }}
-            placeholder="Insira sua chave de API"
-            required
-          />
-
-          {/* Termos de uso */}
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={aceitoTermos}
-                onChange={(e) => setAceitoTermos(e.target.checked)}
-                color="primary"
-              />
-            }
-            label="Aceito os termos de uso"
-            sx={{ mb: 2 }}
-          />
-
-          {/* Botão de envio */}
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-            Salvar Configurações
-          </Button>
-        </form>
-      </Box>
-    </Layout>
-  );
+        </Layout>
+    );
 };
 
 export default SettingsPage;

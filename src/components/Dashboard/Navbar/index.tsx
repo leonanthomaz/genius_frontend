@@ -50,7 +50,7 @@ const Navbar: React.FC<NavbarProps> = ({ handleDrawerToggle }) => {
                     <MenuIcon/>
                 </IconButton>
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    {user?.empresa_nome}
+                    {state.user ? state.user.company.name : 'Dashboard'} {/* Acessa o user através do state */}
                 </Typography>
 
                 <Button
@@ -59,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ handleDrawerToggle }) => {
                     onClick={handleMenuOpen}
                     sx={{ textTransform: 'none' }}
                 >
-                    {state.user ? state.user.username : 'Perfil'} {/* Acessa o user através do state */}
+                    {state.user ? state.user.user.username : 'Perfil'} {/* Acessa o user através do state */}
                 </Button>
 
                 <Menu

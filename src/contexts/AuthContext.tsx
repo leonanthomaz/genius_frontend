@@ -1,37 +1,18 @@
-import React, { createContext, useReducer, useContext, ReactNode, useEffect } from 'react';
-// import { loginApi, getUserDetailsApi, loginWithGoogleApi } from '../services/api';
+// CONTEXTO - PAINEL ADMINISTRATIVO GERAL
+
+import React, { createContext, useReducer, useContext, ReactNode, useEffect, useState } from 'react';
 import { loginApi, getUserDetailsApi, loginWithGoogleApi } from '../services/api';
 import { toast } from 'react-toastify';
-
-// src/contexts/AuthContext.tsx
-interface User {
-    id: number;
-    username: string;
-    empresa_id: number;
-    empresa_nome: string;
-    empresa_descricao: string | null;
-    empresa_ramo: string | null; 
-    empresa_cnpj: string | null;
-    empresa_telefone: string | null;
-    empresa_email: string | null;
-    empresa_endereco: string | null;
-    empresa_website: string | null;
-    empresa_endpoint_entrada: string | null;
-    empresa_endpoint_saida: string | null;
-    empresa_tipo_ia: string | null;
-    empresa_modelo_ia: string | null; 
-    empresa_token_ia: string | null; 
-    empresa_tipo_negocio: string | null;
-    is_admin: boolean | null;
-}
+import Cookies from 'js-cookie'; // Importe a biblioteca js-cookie
+import { useGlobal } from '../contexts/GlobalContext'; // Importe o GlobalContext
+import { MeResponse } from '../types/EnterpriseType';
 
 
 interface AuthState {
     isAuthenticated: boolean;
-    user: User | null;
+    user: MeResponse | null;
     isLoading: boolean;
     error: string | null;
-    token: string | null;
 }
 
 interface AuthContextType {
@@ -41,27 +22,25 @@ interface AuthContextType {
     loginWithGoogle: (token: string) => Promise<void>;
     logout: () => void;
     getToken: () => string | null;
-    getUser: () => User | null;
+    getUser: () => MeResponse | null;
     isAuthenticated: () => boolean;
-    isAdmin : () => boolean;
+    isAdmin: () => boolean;
 }
 
 type AuthAction =
     | { type: 'LOGIN_REQUEST' }
-    | { type: 'LOGIN_SUCCESS'; payload: { token: string; user: User } }
+    | { type: 'LOGIN_SUCCESS'; payload: { user: MeResponse } }
     | { type: 'LOGIN_FAILURE'; payload: string }
     | { type: 'LOGOUT' }
-    | { type: 'SET_USER'; payload: User }
+    | { type: 'SET_USER'; payload: MeResponse }
     | { type: 'SET_LOADING'; payload: boolean }
-    | { type: 'SET_ERROR'; payload: string | null }
-    | { type: 'SET_TOKEN'; payload: string | null };
+    | { type: 'SET_ERROR'; payload: string | null };
 
 const initialState: AuthState = {
-    isAuthenticated: !!localStorage.getItem('USER_TOKEN'),
-    user: JSON.parse(localStorage.getItem('CURRENT_USER') || 'null'),
+    isAuthenticated: false,
+    user: null,
     isLoading: false,
     error: null,
-    token: localStorage.getItem('USER_TOKEN') || null,
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -77,20 +56,17 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
                 user: action.payload.user,
                 isLoading: false,
                 error: null,
-                token: action.payload.token,
             };
         case 'LOGIN_FAILURE':
-            return { ...state, isLoading: false, error: action.payload, token: null, user: null, isAuthenticated: false };
+            return { ...state, isLoading: false, error: action.payload, user: null, isAuthenticated: false };
         case 'LOGOUT':
-            return { ...state, isAuthenticated: false, user: null, token: null };
+            return { ...state, isAuthenticated: false, user: null };
         case 'SET_USER':
             return { ...state, user: action.payload };
         case 'SET_LOADING':
             return { ...state, isLoading: action.payload };
         case 'SET_ERROR':
             return { ...state, error: action.payload };
-        case 'SET_TOKEN':
-            return { ...state, token: action.payload };
         default:
             return state;
     }
@@ -98,38 +74,46 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
-
+    const [token, setToken] = useState<string | null>(Cookies.get('geniusToken') || null); // Obtém o token do cookie
+    const { setLoading } = useGlobal();  // Acesse a função setLoading do GlobalContext
+    
     useEffect(() => {
         const initializeAuth = async () => {
-            const token = localStorage.getItem('USER_TOKEN');
-            if (token && !state.user) {
+            const tokenFromCookie = Cookies.get('geniusToken');
+            setToken(tokenFromCookie || null); // Atualiza o estado do token
+            if (tokenFromCookie && !state.user) {
                 try {
+                    setLoading(true); // Ativa o carregamento global
                     dispatch({ type: 'SET_LOADING', payload: true });
-                    const user = await getUserDetailsApi(token);
-                    dispatch({ type: 'SET_USER', payload: user });
-                    localStorage.setItem('CURRENT_USER', JSON.stringify(user));
-                    dispatch({ type: 'SET_TOKEN', payload: token });
+                    const user = await getUserDetailsApi(tokenFromCookie);
+                    dispatch({ type: 'LOGIN_SUCCESS', payload: { user } });
                 } catch (error: any) {
                     console.error('Erro ao inicializar autenticação:', error);
-                    localStorage.removeItem('USER_TOKEN');
-                    localStorage.removeItem('CURRENT_USER');
+                    setToken(null);
+                    Cookies.remove('geniusToken');
                     dispatch({ type: 'LOGOUT' });
                 } finally {
+                    setLoading(false); // Desativa o carregamento global
                     dispatch({ type: 'SET_LOADING', payload: false });
                 }
+            } else {
+                dispatch({ type: 'SET_LOADING', payload: false });
             }
         };
+    
         initializeAuth();
-    }, [state.user]);
-
+    }, [state.user, setLoading]);
+    
+    
+    
     const login = async (username: string, password: string) => {
         dispatch({ type: 'LOGIN_REQUEST' });
         try {
-            const token = await loginApi(username, password);
-            localStorage.setItem('USER_TOKEN', token);
-            const user = await getUserDetailsApi(token);
-            localStorage.setItem('CURRENT_USER', JSON.stringify(user));
-            dispatch({ type: 'LOGIN_SUCCESS', payload: { token, user } });
+            const apiToken = await loginApi(username, password);
+            setToken(apiToken);
+            Cookies.set('geniusToken', apiToken, { secure: true, sameSite: 'strict' });
+            const user = await getUserDetailsApi(apiToken);
+            dispatch({ type: 'LOGIN_SUCCESS', payload: { user } });
             toast.success('Login bem-sucedido!');
         } catch (error: any) {
             console.error('Erro ao fazer login:', error);
@@ -138,14 +122,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     };
 
-    const loginWithGoogle = async (token: string) => {
+    const loginWithGoogle = async (googleToken: string) => {
         dispatch({ type: 'LOGIN_REQUEST' });
         try {
-            const apiToken = await loginWithGoogleApi(token);
-            localStorage.setItem('USER_TOKEN', apiToken);
+            const response = await loginWithGoogleApi(googleToken);
+            const apiToken = response.token;
+            setToken(apiToken);
+            Cookies.set('geniusToken', apiToken, { secure: true, sameSite: 'strict' }); // Armazena o token no cookie
             const user = await getUserDetailsApi(apiToken);
-            localStorage.setItem('CURRENT_USER', JSON.stringify(user));
-            dispatch({ type: 'LOGIN_SUCCESS', payload: { token: apiToken, user } });
+            dispatch({ type: 'LOGIN_SUCCESS', payload: { user } });
             toast.success('Login com Google bem-sucedido!');
         } catch (error: any) {
             console.error('Erro ao fazer login com Google:', error);
@@ -155,18 +140,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     const logout = () => {
-        localStorage.removeItem('USER_TOKEN');
-        localStorage.removeItem('CURRENT_USER');
+        setToken(null);
+        Cookies.remove('geniusToken'); // Remove o cookie
         dispatch({ type: 'LOGOUT' });
         toast.success('Logout realizado com sucesso!');
     };
 
-    const getToken = () => state.token;
+    const getToken = () => token;
     const getUser = () => state.user;
     const isAuthenticated = () => state.isAuthenticated;
-    const isAdmin = () => state.user?.is_admin || false;
+    const isAdmin = () => state.user?.user.is_admin || false;
 
-    const value = { state, dispatch, login, logout, loginWithGoogle, getToken, getUser, isAuthenticated, isAdmin  };
+    const value = { state, dispatch, login, logout, loginWithGoogle, getToken, getUser, isAuthenticated, isAdmin };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

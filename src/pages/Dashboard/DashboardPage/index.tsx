@@ -45,7 +45,7 @@ const MainPage: React.FC = () => {
 
                 {/* Boas-Vindas */}
                 <Typography variant="h4" sx={{ mt: 8, mb: 1, color: 'primary.main', fontWeight: 'bold' }}>
-                    Bem-vindo, {user ? user.username : 'Usuário'}! {/* Exiba o nome de usuário */}
+                    Bem-vindo, {user ? user.user.name : 'Usuário'}! {/* Exiba o nome de usuário */}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 3 }}>
                     Aqui está um resumo das atividades recentes e informações importantes.
