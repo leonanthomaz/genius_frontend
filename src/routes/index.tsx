@@ -20,6 +20,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 import { AuthProvider } from '../contexts/AuthContext';
 import PrivateRoute from './PrivateRoute';
 import ChatPage from '../pages/Enterprise/ChatPage';
+import ServiceAdminPage from '../pages/Dashboard/ServiceAdminPage';
 
 const AppRoute: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -64,6 +65,7 @@ const AppRoute: React.FC = () => {
             <Route path="/dashboard/whatsapp" element={<WhatsappPage />} />
             <Route path="/dashboard/analytics" element={<AnalyticsPage />} />
             <Route path="/dashboard/finance" element={<FinancePage />} />
+            <Route path="/dashboard/services" element={<ServiceAdminPage />} />
           </Route>
         </Route>
 

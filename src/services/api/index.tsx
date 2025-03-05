@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { CompanyInfo, MeResponse } from '../../types/EnterpriseType';
+import { CompanyInfo, MeResponse, ServiceType } from '../../types/EnterpriseType';
 
 export const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -54,7 +54,6 @@ export const loginWithGoogleApi = async (token: string): Promise<MeResponse> => 
     }
 };
 
-
 export const updateUserApi = async (token: string, userId: number, userData: any): Promise<any> => {
     try {
         const response: AxiosResponse<any> = await api.patch(`/admin/usuarios/${userId}`, userData, {
@@ -87,3 +86,18 @@ export const updateCompanyApi = async (token: string, companyId: number, company
         throw error;
     }
 };
+
+export const servicePostApi = async (
+    token: string,
+    service: Omit<ServiceType, 'id' | 'created_at' | 'updated_at' | 'deleted_at' | 'deleted_by'>, // Removendo campos que não devem ser enviados
+    user: MeResponse
+  ): Promise<ServiceType> => {
+    try {
+      const response: AxiosResponse<ServiceType> = await api.post('/services/', service, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };

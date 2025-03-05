@@ -59,7 +59,7 @@ export interface ProdutoType {
     deleted_by?: number | null;
 }
 
-export interface ServicoType {
+export interface ServiceType {
     id?: number;
     name: string;
     description: string;

@@ -43,7 +43,7 @@ const initialState: AuthState = {
     error: null,
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
