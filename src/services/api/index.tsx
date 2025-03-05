@@ -25,15 +25,20 @@ export const getUserDetailsApi = async (token: string): Promise<any> => {
     }
 };
 
-export const sendMessageToAssistant = async (message: string) => {
+export const sendMessageToAssistant = async (
+    message: string,
+    companyId: number,
+    companyConfig: any
+  ) => {
     try {
-      const response = await api.post(`/chat`, {
+      const response = await api.post('/chat', {
         message,
-        company_id: 1,
+        company_id: companyId,
+        company_config: companyConfig,
       });
       return response.data;
     } catch (error) {
-      console.error("Erro ao enviar mensagem para o assistente:", error);
+      console.error('Erro ao enviar mensagem para o assistente:', error);
       throw error;
     }
 };

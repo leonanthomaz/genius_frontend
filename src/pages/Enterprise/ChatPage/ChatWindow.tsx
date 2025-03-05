@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TextField, IconButton, CircularProgress, Box, Skeleton } from '@mui/material';
+import { TextField, IconButton, CircularProgress, Box, styled, keyframes } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import Message from './Message';
-import styled, { keyframes } from 'styled-components';
 
 interface ChatWindowProps {
   chat: { sender: string; text: string }[];
-  setChat: React.Dispatch<React.SetStateAction<{ sender: string; text: string }[]>>;
   loading: boolean;
   typing: boolean;
   onSendMessage: (message: string) => void;
@@ -17,7 +15,7 @@ const ChatWindowContainer = styled(Box)`
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  padding-bottom: 10px;
+  padding: 10px;
   scroll-behavior: smooth;
 `;
 
@@ -25,7 +23,7 @@ const InputArea = styled(Box)`
   display: flex;
   align-items: center;
   border-top: 1px solid #ddd;
-  padding-top: 10px;
+  padding: 10px;
 `;
 
 const TypingAnimation = keyframes`
@@ -77,16 +75,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat, loading, typing, onSendMe
   return (
     <Box display="flex" flexDirection="column" height="100%">
       <ChatWindowContainer ref={chatRef}>
-        {chat.length === 0 ? (
-          <Skeleton variant="rectangular" width="80%" height={40} style={{ marginBottom: 10 }} />
-        ) : (
-          chat.map((msg, index) => <Message key={index} sender={msg.sender} text={msg.text} />)
-        )}
+        {chat.map((msg, index) => (
+          <Message key={index} sender={msg.sender} text={msg.text} />
+        ))}
         {typing && (
           <TypingIndicator>
-            <span></span>
-            <span></span>
-            <span></span>
+            <span />
+            <span />
+            <span />
           </TypingIndicator>
         )}
       </ChatWindowContainer>

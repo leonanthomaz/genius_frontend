@@ -42,8 +42,6 @@ const ContactPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     console.log({ nome, email, servico, mensagem });
-    // Aqui você pode adicionar a lógica para enviar o formulário
-    // Limpar o formulário após o envio
     setNome('');
     setEmail('');
     setServico('');

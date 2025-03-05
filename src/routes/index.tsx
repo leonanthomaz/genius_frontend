@@ -19,7 +19,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 
 import { AuthProvider } from '../contexts/AuthContext';
 import PrivateRoute from './PrivateRoute';
-import ChatPage from '../pages/Enterprise/Chat';
+import ChatPage from '../pages/Enterprise/ChatPage';
 
 const AppRoute: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
